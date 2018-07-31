@@ -260,7 +260,6 @@ TEST_CASE("list can be erased", "[list]") {
   custom::list<int>::const_iterator it2 = l2.cbegin();
   custom::list<int>::const_iterator first = ++it2;
   custom::list<int>::const_iterator last = ++(++(++it2));
-  std::cout << "*****" << std::endl;
   l2.erase(first, last);
 
   it = l2.begin();
@@ -271,8 +270,3 @@ TEST_CASE("list can be erased", "[list]") {
     ++it;
   }
 }
-
-// int main(void) {
-//   // volatile custom::list<int> l1{1, 2, 3};
-//   volatile int x = 5;
-// }
