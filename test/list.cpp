@@ -5,8 +5,8 @@
 #include "../list/list.hpp"
 #include "boost/type_index.hpp"
 
-
-#define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
+#define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do
+                           // this in one cpp file
 #include "./catch.hpp"
 
 TEST_CASE("listIterator operations", "[listIterator]") {
@@ -57,7 +57,8 @@ TEST_CASE("listIterator operations", "[listIterator]") {
     custom::list<int>::iterator it = l.begin();
     custom::list<int>::const_iterator it_const = l_const.begin();
     REQUIRE(custom::list<int>::iterator(it->nextPtr_) == l.end());
-    REQUIRE(custom::list<int>::const_iterator(it_const->nextPtr_) == l_const.end());
+    REQUIRE(custom::list<int>::const_iterator(it_const->nextPtr_) ==
+            l_const.end());
     // it_const->nextPtr_ = nullptr; // TRIGGERS COMPILE TIME ERROR
   }
 
@@ -65,7 +66,8 @@ TEST_CASE("listIterator operations", "[listIterator]") {
     custom::list<int>::iterator it = l.begin();
     custom::list<int>::const_iterator it_const = l_const.begin();
     REQUIRE(custom::list<int>::iterator(it->nextPtr_) == l.end());
-    REQUIRE(custom::list<int>::const_iterator(it_const->nextPtr_) == l_const.end());
+    REQUIRE(custom::list<int>::const_iterator(it_const->nextPtr_) ==
+            l_const.end());
     // it_const->nextPtr_ = nullptr; // TRIGGERS COMPILE TIME ERROR
   }
   SECTION("listIterator is_null() returns true when nullptr") {
@@ -83,7 +85,6 @@ TEST_CASE("listIterator operations", "[listIterator]") {
     REQUIRE((--it_const).is_null());
   }
 }
-
 
 TEST_CASE("list can be constructed", "[list]") {
   SECTION("empty list creates a list with no elements with begin() == end()") {
@@ -192,7 +193,8 @@ TEST_CASE("list can be constructed", "[list]") {
       ++val;
     }
     REQUIRE(l.end().is_null() == true);
-    REQUIRE(prevIt == l.begin()); // Iterators are not invalidated and point to new list
+    REQUIRE(prevIt ==
+            l.begin());  // Iterators are not invalidated and point to new list
   }
 }
 
@@ -202,6 +204,72 @@ TEST_CASE("list can be cleared", "[list]") {
   REQUIRE(l1.size() == 0);
   REQUIRE(l1.begin() == l1.end());
   REQUIRE(l1.begin().is_null());
+}
+
+TEST_CASE("list can be erased", "[list]") {
+  custom::list<int> l{1, 2, 3, 4, 5};
+
+  // erase from beginning
+  custom::list<int>::iterator retValBegin = l.erase(l.cbegin());
+  REQUIRE(l.size() == 4);
+  REQUIRE(*retValBegin == 2);
+  custom::list<int>::iterator it = l.begin();
+  int x = 2;
+  while (it != l.end()) {
+    REQUIRE(*it == x);
+    ++x;
+    ++it;
+  }
+
+  it = l.begin();
+  for (int i = 0; i < 3; ++i) {
+    ++it;
+  }
+
+  // erase from end
+  custom::list<int>::iterator retValEnd =
+      l.erase(custom::list<int>::const_iterator(it));
+  REQUIRE(l.size() == 3);
+  REQUIRE(retValEnd.is_null());
+
+  it = l.begin();
+  x = 2;
+  while (it != l.end()) {
+    REQUIRE(*it == x);
+    ++x;
+    ++it;
+  }
+
+  it = l.begin();
+  ++it;
+
+  // erase from middle
+  custom::list<int>::iterator retValMid =
+      l.erase(custom::list<int>::const_iterator(it));
+  REQUIRE(l.size() == 2);
+
+  it = l.begin();
+  x = 2;
+  while (it != l.end()) {
+    REQUIRE(*it == x);
+    x *= 2;
+    ++it;
+  }
+
+  custom::list<int> l2{1, 3, 3, 3, 1};
+  custom::list<int>::const_iterator it2 = l2.cbegin();
+  custom::list<int>::const_iterator first = ++it2;
+  custom::list<int>::const_iterator last = ++(++(++it2));
+  std::cout << "*****" << std::endl;
+  l2.erase(first, last);
+
+  it = l2.begin();
+  x = 1;
+  while (it != l.end()) {
+    std::cout << *it << std::endl;
+    REQUIRE(*it == x);
+    ++it;
+  }
 }
 
 // int main(void) {

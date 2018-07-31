@@ -319,28 +319,13 @@ class list {
   }
 
   /**** MODIFIERS ****/
-  void clear() noexcept {
-    iterator it = begin();
-    while (it != end()) {
-      iterator toDelete = it++;
-      if (head_ == tail_) {
-        tail_ = it.listNodePtr_;
-      }
-      head_ = it.listNodePtr_;
-      std::allocator_traits<rebound_allocator_type>::destroy(
-          alloc_, toDelete.listNodePtr_);
-      std::allocator_traits<rebound_allocator_type>::deallocate(
-          alloc_, toDelete.listNodePtr_, 1);
-      --size_;
-    }
-  }
+  void clear() noexcept { erase(cbegin(), cend()); }
 
   iterator insert(const_iterator pos, const_reference value) {
     listNode<T>* newNode =
         std::allocator_traits<rebound_allocator_type>::allocate(alloc_, 1);
     std::allocator_traits<rebound_allocator_type>::construct(alloc_, newNode,
                                                              value);
-
     // inserting into empty list
     if (size() == 0) {
       head_ = newNode;
@@ -380,7 +365,6 @@ class list {
         std::allocator_traits<rebound_allocator_type>::allocate(alloc_, 1);
     std::allocator_traits<rebound_allocator_type>::construct(alloc_, newNode,
                                                              std::move(value));
-
     // inserting into empty list
     if (size() == 0) {
       head_ = newNode;
@@ -449,9 +433,42 @@ class list {
   }
 
   iterator erase(const_iterator pos) {
-    if (pos == cbegin()) {
-      listNode<T>* nextNode = ++pos;
+    listNode<value_type>* ptrToDelete =
+        const_cast<typename iterator::pointer>(pos.listNodePtr_);
+    listNode<value_type>* nextNode = ptrToDelete->nextPtr_;
+    listNode<value_type>* prevNode = ptrToDelete->prevPtr_;
+
+    if (ptrToDelete == head_) {
+      if (head_ == tail_) {
+        tail_ = nextNode;
+      } else {
+        nextNode->prevPtr_ = nullptr;
+      }
+      head_ = nextNode;
+    } else if (ptrToDelete == tail_) {
+      prevNode->nextPtr_ = nullptr;
+      tail_ = prevNode;
+    } else {
+      prevNode->nextPtr_ = nextNode;
+      nextNode->prevPtr_ = prevNode;
     }
+
+    std::allocator_traits<rebound_allocator_type>::destroy(alloc_, ptrToDelete);
+    std::allocator_traits<rebound_allocator_type>::deallocate(alloc_,
+                                                              ptrToDelete, 1);
+    --size_;
+    return iterator(nextNode);
+  }
+
+  iterator erase(const_iterator first, const_iterator last) {
+    const_iterator it = first;
+    iterator retVal =
+        iterator(const_cast<typename iterator::pointer>(first.listNodePtr_));
+    while (it != last) {
+      retVal = erase(it);
+      ++it;
+    }
+    return retVal;
   }
 
  private:
