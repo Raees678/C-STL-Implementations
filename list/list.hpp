@@ -28,11 +28,13 @@ class list {
     listNode<value_type>* nextPtr_;
     listNode<value_type>* prevPtr_;
 
-    explicit listNode(const value_type& value, listNode<value_type>* nextPtr = nullptr,
+    explicit listNode(const value_type& value,
+                      listNode<value_type>* nextPtr = nullptr,
                       listNode<value_type>* prevPtr = nullptr)
         : value_(value), nextPtr_(nextPtr), prevPtr_(prevPtr) {}
 
-    explicit listNode(value_type&& value, listNode<value_type>* nextPtr = nullptr,
+    explicit listNode(value_type&& value,
+                      listNode<value_type>* nextPtr = nullptr,
                       listNode<value_type>* prevPtr = nullptr)
         : value_(std::move(value)), nextPtr_(nextPtr), prevPtr_(prevPtr) {}
   };
@@ -475,13 +477,9 @@ class list {
     return retVal;
   }
 
-  void push_back(const T& value) {
-    insert(cend(), value);
-  }
+  void push_back(const T& value) { insert(cend(), value); }
 
-  void push_back(T&& value) {
-    insert(cend(), std::move(value));
-  }
+  void push_back(T&& value) { insert(cend(), std::move(value)); }
 
   template <class... Args>
   reference emplace_back(Args&&... args) {
@@ -495,13 +493,9 @@ class list {
     erase(lastElementIt);
   }
 
-  void push_front(const T& value) {
-    insert(cbegin(), value);
-  }
+  void push_front(const T& value) { insert(cbegin(), value); }
 
-  void push_front(T&& value) {
-    insert(cbegin(), std::move(value));
-  }
+  void push_front(T&& value) { insert(cbegin(), std::move(value)); }
 
   template <class... Args>
   reference emplace_front(Args&&... args) {
@@ -515,11 +509,30 @@ class list {
     erase(firstElementIt);
   }
 
+  void resize(size_type count) {
+    while (count < size()) {
+      pop_back();
+    }
+
+    while (count > size()) {
+      push_back(value_type());
+    }
+  }
+
+  void resize(size_type count, const value_type& value) {
+    while (count < size()) {
+      pop_back();
+    }
+
+    while (count > size()) {
+      push_back(value);
+    }
+  }
 
  private:
   rebound_allocator_type alloc_;
-  listNode<T>* head_;
-  listNode<T>* tail_;
+  listNode<value_type>* head_;
+  listNode<value_type>* tail_;
   size_type size_;
 };
 }  //  namespace custom

@@ -287,7 +287,8 @@ TEST_CASE("list can be pushed_back", "[list]") {
 
 TEST_CASE("list can be emplaced_back", "[list]") {
   custom::list<std::unique_ptr<int>> l;
-  custom::list<std::unique_ptr<int>>::reference ref = l.emplace_back(new int(6));
+  custom::list<std::unique_ptr<int>>::reference ref =
+      l.emplace_back(new int(6));
   REQUIRE(*ref == 6);
 }
 
@@ -315,7 +316,8 @@ TEST_CASE("list can be pushed_front", "[list]") {
 
 TEST_CASE("list can be emplaced_front", "[list]") {
   custom::list<std::unique_ptr<int>> l;
-  custom::list<std::unique_ptr<int>>::reference ref = l.emplace_front(new int(6));
+  custom::list<std::unique_ptr<int>>::reference ref =
+      l.emplace_front(new int(6));
   REQUIRE(*ref == 6);
 }
 
@@ -325,5 +327,22 @@ TEST_CASE("list can be popped_front", "[list]") {
   REQUIRE(l.size() == 1);
   REQUIRE(l.front() == 2);
   REQUIRE(l.back() == 2);
+}
+
+TEST_CASE("list can be resized", "[list]") {
+  custom::list<int> l{1, 2};
+  l.resize(1);
+  REQUIRE(l.size() == 1);
+  l.resize(2);
+  REQUIRE(l.size() == 2);
+  REQUIRE(l.back() == 0);
+  l.resize(4, 17);
+  REQUIRE(l.size() == 4);
+  REQUIRE(l.back() == 17);
+  custom::list<int>::iterator it = l.begin();
+  for(int i = 0; i < 3; ++i) {
+    ++it;
+  }
+  REQUIRE(*it == 17);
 }
 
