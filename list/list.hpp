@@ -495,6 +495,27 @@ class list {
     erase(lastElementIt);
   }
 
+  void push_front(const T& value) {
+    insert(cbegin(), value);
+  }
+
+  void push_front(T&& value) {
+    insert(cbegin(), std::move(value));
+  }
+
+  template <class... Args>
+  reference emplace_front(Args&&... args) {
+    value_type value = value_type(std::move(args)...);
+    iterator it = insert(cbegin(), std::move(value));
+    return *it;
+  }
+
+  void pop_front() {
+    const_iterator firstElementIt = const_iterator(head_);
+    erase(firstElementIt);
+  }
+
+
  private:
   rebound_allocator_type alloc_;
   listNode<T>* head_;

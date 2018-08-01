@@ -299,3 +299,31 @@ TEST_CASE("list can be popped_back", "[list]") {
   REQUIRE(l.back() == 1);
 }
 
+TEST_CASE("list can be pushed_front", "[list]") {
+  custom::list<int> l;
+  l.push_front(5);
+  REQUIRE(l.size() == 1);
+  REQUIRE(l.front() == 5);
+  l.push_front(6);
+  REQUIRE(l.size() == 2);
+  REQUIRE(l.front() == 6);
+  int x = 7;
+  l.push_front(x);
+  REQUIRE(l.size() == 3);
+  REQUIRE(l.front() == 7);
+}
+
+TEST_CASE("list can be emplaced_front", "[list]") {
+  custom::list<std::unique_ptr<int>> l;
+  custom::list<std::unique_ptr<int>>::reference ref = l.emplace_front(new int(6));
+  REQUIRE(*ref == 6);
+}
+
+TEST_CASE("list can be popped_front", "[list]") {
+  custom::list<int> l{1, 2};
+  l.pop_front();
+  REQUIRE(l.size() == 1);
+  REQUIRE(l.front() == 2);
+  REQUIRE(l.back() == 2);
+}
+
