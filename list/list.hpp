@@ -490,6 +490,11 @@ class list {
     return *it;
   }
 
+  void pop_back() {
+    const_iterator lastElementIt = const_iterator(tail_);
+    erase(lastElementIt);
+  }
+
  private:
   rebound_allocator_type alloc_;
   listNode<T>* head_;

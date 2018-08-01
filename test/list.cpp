@@ -291,3 +291,11 @@ TEST_CASE("list can be emplaced_back", "[list]") {
   REQUIRE(*ref == 6);
 }
 
+TEST_CASE("list can be popped_back", "[list]") {
+  custom::list<int> l{1, 2};
+  l.pop_back();
+  REQUIRE(l.size() == 1);
+  REQUIRE(l.front() == 1);
+  REQUIRE(l.back() == 1);
+}
+
