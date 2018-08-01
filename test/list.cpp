@@ -1,6 +1,7 @@
 // Copyright 2018 <raeesrajwani>
 
 #include <iostream>
+#include <memory>
 
 #include "../list/list.hpp"
 #include "boost/type_index.hpp"
@@ -265,8 +266,28 @@ TEST_CASE("list can be erased", "[list]") {
   it = l2.begin();
   x = 1;
   while (it != l.end()) {
-    std::cout << *it << std::endl;
     REQUIRE(*it == x);
     ++it;
   }
 }
+
+TEST_CASE("list can be pushed_back", "[list]") {
+  custom::list<int> l;
+  l.push_back(5);
+  REQUIRE(l.size() == 1);
+  REQUIRE(l.back() == 5);
+  l.push_back(6);
+  REQUIRE(l.size() == 2);
+  REQUIRE(l.back() == 6);
+  int x = 7;
+  l.push_back(x);
+  REQUIRE(l.size() == 3);
+  REQUIRE(l.back() == 7);
+}
+
+TEST_CASE("list can be emplaced_back", "[list]") {
+  custom::list<std::unique_ptr<int>> l;
+  custom::list<std::unique_ptr<int>>::reference ref = l.emplace_back(new int(6));
+  REQUIRE(*ref == 6);
+}
+

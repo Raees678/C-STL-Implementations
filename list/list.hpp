@@ -25,12 +25,16 @@ class list {
     typedef U value_type;
 
     value_type value_;
-    listNode<U>* nextPtr_;
-    listNode<U>* prevPtr_;
+    listNode<value_type>* nextPtr_;
+    listNode<value_type>* prevPtr_;
 
-    explicit listNode(value_type value, listNode<U>* nextPtr = nullptr,
-                      listNode<U>* prevPtr = nullptr)
+    explicit listNode(const value_type& value, listNode<value_type>* nextPtr = nullptr,
+                      listNode<value_type>* prevPtr = nullptr)
         : value_(value), nextPtr_(nextPtr), prevPtr_(prevPtr) {}
+
+    explicit listNode(value_type&& value, listNode<value_type>* nextPtr = nullptr,
+                      listNode<value_type>* prevPtr = nullptr)
+        : value_(std::move(value)), nextPtr_(nextPtr), prevPtr_(prevPtr) {}
   };
 
   template <class U>
@@ -469,6 +473,21 @@ class list {
       ++it;
     }
     return retVal;
+  }
+
+  void push_back(const T& value) {
+    insert(cend(), value);
+  }
+
+  void push_back(T&& value) {
+    insert(cend(), std::move(value));
+  }
+
+  template <class... Args>
+  reference emplace_back(Args&&... args) {
+    value_type value = value_type(std::move(args)...);
+    iterator it = insert(cend(), std::move(value));
+    return *it;
   }
 
  private:
