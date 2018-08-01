@@ -3,6 +3,7 @@
 
 // Copyright 2018 <raeesrajwani>
 
+#include <algorithm>
 #include <initializer_list>
 #include <iostream>
 #include <iterator>
@@ -55,8 +56,15 @@ class list {
     typedef std::bidirectional_iterator_tag iterator_category;
 
     explicit list_iterator(pointer listNodePtr) : listNodePtr_(listNodePtr) {}
+
     list_iterator(const list_iterator<U>& other)
         : listNodePtr_(other.listNodePtr_) {}
+
+    list_iterator<U> operator=(const list_iterator<U>& other) {
+      this->listNodePtr_ = other.listNodePtr_;
+      return *this;
+    }
+
 
     list_iterator<value_type>& operator--() {
       listNodePtr_ = listNodePtr_->prevPtr_;
@@ -95,11 +103,6 @@ class list {
     bool operator!=(const list_iterator<V>& other) const {
       return !(*this == other);
     }
-
-    list_iterator<U> operator=(const list_iterator<U>& other) {
-      this->listNodePtr_ = other.listNodePtr_;
-      return *this;
-    }
   };
 
   template <class U>
@@ -119,8 +122,10 @@ class list {
 
     explicit const_list_iterator(pointer listNodePtr)
         : listNodePtr_(listNodePtr) {}
+
     explicit const_list_iterator(const list_iterator<U>& listIterator)
         : listNodePtr_(const_cast<pointer>(listIterator.listNodePtr_)) {}
+
     const_list_iterator(const const_list_iterator<U>& other)
         : listNodePtr_(other.listNodePtr_) {}
 
@@ -526,6 +531,17 @@ class list {
 
     while (count > size()) {
       push_back(value);
+    }
+  }
+
+  void swap(list<value_type>& other) noexcept(
+      std::allocator_traits<allocator_type>::is_always_equal::value) {
+    std::swap(head_, other.head_);
+    std::swap(tail_, other.tail_);
+    std::swap(size_, other.size_);
+    if constexpr (std::allocator_traits<
+                      allocator_type>::propagate_on_container_swap::value) {
+      std::swap(alloc_, other.alloc_);
     }
   }
 
