@@ -60,28 +60,28 @@ class list {
     list_iterator(const list_iterator<U>& other)
         : listNodePtr_(other.listNodePtr_) {}
 
-    list_iterator<U> operator=(const list_iterator<U>& other) {
+    list_iterator operator=(const list_iterator<U>& other) {
       this->listNodePtr_ = other.listNodePtr_;
       return *this;
     }
 
-    list_iterator<value_type>& operator--() {
+    list_iterator& operator--() {
       listNodePtr_ = listNodePtr_->prevPtr_;
       return *this;
     }
 
-    list_iterator<value_type> operator--(int) {
+    list_iterator operator--(int) {
       pointer temp = listNodePtr_;
       --(*this);
       return list_iterator<value_type>(temp);
     }
 
-    list_iterator<value_type>& operator++() {
+    list_iterator& operator++() {
       listNodePtr_ = listNodePtr_->nextPtr_;
       return *this;
     }
 
-    list_iterator<value_type> operator++(int) {
+    list_iterator operator++(int) {
       pointer temp = listNodePtr_;
       ++(*this);
       return list_iterator<value_type>(temp);
@@ -133,18 +133,18 @@ class list {
       return *this;
     }
 
-    const_list_iterator<value_type> operator--(int) {
+    const_list_iterator operator--(int) {
       pointer temp = listNodePtr_;
       --(*this);
       return const_list_iterator<value_type>(temp);
     }
 
-    const_list_iterator<value_type>& operator++() {
+    const_list_iterator& operator++() {
       listNodePtr_ = listNodePtr_->nextPtr_;
       return *this;
     }
 
-    const_list_iterator<value_type> operator++(int) {
+    const_list_iterator operator++(int) {
       pointer temp = listNodePtr_;
       ++(*this);
       return const_list_iterator<value_type>(temp);
