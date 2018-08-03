@@ -204,7 +204,6 @@ TEST_CASE("list can be constructed", "[list]") {
     REQUIRE(l.back() == 22);
   }
 
-
   SECTION("list from move construction") {
     custom::list<int> l1{1, 2, 3};
     custom::list<int>::iterator prevIt = l1.begin();
@@ -242,6 +241,22 @@ TEST_CASE("list can be constructed", "[list]") {
     REQUIRE(l.end().is_null() == true);
     REQUIRE(prevIt ==
             l.begin());  // Iterators are not invalidated and point to new list
+  }
+
+  SECTION("list from move assignment") {
+    custom::list<int> l;
+    l = {1, 2, 3};
+    REQUIRE(l.size() == 3);
+    custom::list<int>::iterator it = l.begin();
+    custom::list<int>::iterator beforeBegin = --(l.begin());
+    REQUIRE(beforeBegin.is_null() == true);
+    int val = 1;
+    while (it != l.end()) {
+      REQUIRE(*it == val);
+      ++it;
+      ++val;
+    }
+    REQUIRE(l.end().is_null() == true);
   }
 }
 
@@ -386,7 +401,7 @@ TEST_CASE("list can be resized", "[list]") {
   REQUIRE(l.size() == 4);
   REQUIRE(l.back() == 17);
   custom::list<int>::iterator it = l.begin();
-  for(int i = 0; i < 3; ++i) {
+  for (int i = 0; i < 3; ++i) {
     ++it;
   }
   REQUIRE(*it == 17);
@@ -405,4 +420,3 @@ TEST_CASE("list can be swapped", "[list]") {
   REQUIRE(it != l1.begin());
   REQUIRE(it == l2.begin());
 }
-
