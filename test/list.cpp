@@ -165,7 +165,7 @@ TEST_CASE("list can be constructed", "[list]") {
 
   SECTION("list from copy construction") {
     custom::list<int> l1{1, 2, 3};
-    custom::list l = l1;
+    custom::list<int> l = l1;
     REQUIRE(l.size() == 3);
     custom::list<int>::iterator it = l.begin();
     custom::list<int>::iterator beforeBegin = --(l.begin());
@@ -183,7 +183,7 @@ TEST_CASE("list can be constructed", "[list]") {
     REQUIRE(l.back() == 22);
   }
 
-  SECTION("list from copy assignment") {
+  SECTION("list from copy initialization") {
     custom::list<int> l1{1, 2, 3};
     custom::list<int> l;
     l = l1;
@@ -208,7 +208,27 @@ TEST_CASE("list can be constructed", "[list]") {
   SECTION("list from move construction") {
     custom::list<int> l1{1, 2, 3};
     custom::list<int>::iterator prevIt = l1.begin();
-    custom::list l = std::move(l1);
+    custom::list<int> l(std::move(l1));
+    REQUIRE(l.size() == 3);
+    custom::list<int>::iterator it = l.begin();
+    custom::list<int>::iterator beforeBegin = --(l.begin());
+    REQUIRE(beforeBegin.is_null() == true);
+    int val = 1;
+    while (it != l.end()) {
+      REQUIRE(*it == val);
+      ++it;
+      ++val;
+    }
+    REQUIRE(l.end().is_null() == true);
+    REQUIRE(prevIt ==
+            l.begin());  // Iterators are not invalidated and point to new list
+  }
+
+  SECTION("list from move assignment") {
+    custom::list<int> l1{1, 2, 3};
+    custom::list<int>::iterator prevIt = l1.begin();
+    custom::list<int> l;
+    l = std::move(l1);
     REQUIRE(l.size() == 3);
     custom::list<int>::iterator it = l.begin();
     custom::list<int>::iterator beforeBegin = --(l.begin());

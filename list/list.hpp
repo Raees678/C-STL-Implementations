@@ -277,10 +277,10 @@ class list {
     if constexpr (std::allocator_traits<allocator_type>::
                       propagate_on_container_move_assignment::value) {
       // move new allocator for future reallocations
-      alloc_(std::move(other.alloc_));
-      head_(std::move(other.head_));
-      tail_(std::move(other.tail_));
-      size_(std::move(other.size()));
+      alloc_ = std::move(other.alloc_);
+      head_ = std::move(other.head_);
+      tail_ = std::move(other.tail_);
+      size_ = std::move(other.size());
       other.head_ = nullptr;
       other.tail_ = nullptr;
       other.size_ = 0;
@@ -288,9 +288,9 @@ class list {
       // allocators cant be moved but are equal
       if (std::allocator_traits<allocator_type>::is_always_equal::value) {
         // simply move new memory resources in
-        head_(std::move(other.head_));
-        tail_(std::move(other.tail_));
-        size_(std::move(other.size()));
+        head_ = std::move(other.head_);
+        tail_ = std::move(other.tail_);
+        size_ = std::move(other.size());
         other.head_ = nullptr;
         other.tail_ = nullptr;
         other.size_ = 0;
