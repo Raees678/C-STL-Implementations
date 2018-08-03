@@ -183,7 +183,7 @@ TEST_CASE("list can be constructed", "[list]") {
     REQUIRE(l.back() == 22);
   }
 
-  SECTION("list from copy initialization") {
+  SECTION("list from copy assignment") {
     custom::list<int> l1{1, 2, 3};
     custom::list<int> l;
     l = l1;
