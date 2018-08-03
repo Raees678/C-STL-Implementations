@@ -163,7 +163,7 @@ TEST_CASE("list can be constructed", "[list]") {
     REQUIRE(l.end().is_null() == true);
   }
 
-  SECTION("list from copy") {
+  SECTION("list from copy construction") {
     custom::list<int> l1{1, 2, 3};
     custom::list l = l1;
     REQUIRE(l.size() == 3);
@@ -177,9 +177,35 @@ TEST_CASE("list can be constructed", "[list]") {
       ++val;
     }
     REQUIRE(l.end().is_null() == true);
+
+    l.back() = 22;
+    REQUIRE(l1.back() == 3);
+    REQUIRE(l.back() == 22);
   }
 
-  SECTION("list from move") {
+  SECTION("list from copy initialization") {
+    custom::list<int> l1{1, 2, 3};
+    custom::list<int> l;
+    l = l1;
+    REQUIRE(l.size() == 3);
+    custom::list<int>::iterator it = l.begin();
+    custom::list<int>::iterator beforeBegin = --(l.begin());
+    REQUIRE(beforeBegin.is_null() == true);
+    int val = 1;
+    while (it != l.end()) {
+      REQUIRE(*it == val);
+      ++it;
+      ++val;
+    }
+    REQUIRE(l.end().is_null() == true);
+
+    l.back() = 22;
+    REQUIRE(l1.back() == 3);
+    REQUIRE(l.back() == 22);
+  }
+
+
+  SECTION("list from move construction") {
     custom::list<int> l1{1, 2, 3};
     custom::list<int>::iterator prevIt = l1.begin();
     custom::list l = std::move(l1);

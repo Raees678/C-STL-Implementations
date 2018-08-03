@@ -2,9 +2,9 @@
 #include <iostream>
 #include <list>
 #include <memory>
-#include "./list/list.hpp"
+// #include "./list/list.hpp"
+// Empty file used for quick C++ mocking.
+// All unit tests are placed in /test directory
 
 int main(int argc, char* argv[]) {
-  custom::list<std::unique_ptr<int>> l;
-  auto& x = l.emplace_back(new int(6));
 }

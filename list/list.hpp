@@ -65,7 +65,6 @@ class list {
       return *this;
     }
 
-
     list_iterator<value_type>& operator--() {
       listNodePtr_ = listNodePtr_->prevPtr_;
       return *this;
@@ -254,6 +253,41 @@ class list {
 
   ~list() { clear(); }
 
+  list& operator=(const list& other) {
+    // if allocators can be copied AND are not equal
+    if constexpr (std::allocator_traits<allocator_type>::
+                      propagate_on_container_copy_assignment::value &&
+                  !std::allocator_traits<allocator_type>::is_always_equal::value) {
+      // deallocate using current allocator
+      clear();
+      // reallocate using new allocator
+      alloc_ = other.alloc_;
+    }
+    // else allocators are equal OR allocator cannot be copied
+    // use current allocator to allocate copies 'value_type' values in other
+    assign(other.begin(), other.end());
+    return *this;
+  }
+
+  void assign(size_type count, const T& value) {
+    clear();
+    insert(cbegin(), count, value);
+  }
+
+  template <class InputIt>
+  void assign(
+      InputIt first, InputIt last,
+      typename std::enable_if<is_input_iterator<InputIt>::value>::type* =
+          nullptr) {
+    clear();
+    insert(cbegin(), first, last);
+  }
+
+  void assign(std::initializer_list<T> ilist) {
+    clear();
+    insert(cbegin(), ilist);
+  }
+
   allocator_type get_allocator() const { return alloc_; }
 
   /**** ELEMENT ACCESS ****/
@@ -339,10 +373,10 @@ class list {
                                                              value);
     // inserting into empty list
     if (size() == 0) {
+      listNode<T>* prevHead = head_;
       head_ = newNode;
       tail_ = head_;
-      newNode->nextPtr_ =
-          const_cast<typename iterator::pointer>(pos.listNodePtr_);
+      newNode->nextPtr_ = prevHead;
       newNode->prevPtr_ = nullptr;
     } else {
       // inserting into front of list
@@ -378,10 +412,10 @@ class list {
                                                              std::move(value));
     // inserting into empty list
     if (size() == 0) {
+      listNode<T>* prevHead = head_;
       head_ = newNode;
       tail_ = head_;
-      newNode->nextPtr_ =
-          const_cast<typename iterator::pointer>(pos.listNodePtr_);
+      newNode->nextPtr_ = prevHead;
       newNode->prevPtr_ = nullptr;
     } else {
       // inserting into front of list
@@ -534,7 +568,7 @@ class list {
     }
   }
 
-  void swap(list<value_type>& other) noexcept(
+  void swap(list& other) noexcept(
       std::allocator_traits<allocator_type>::is_always_equal::value) {
     std::swap(head_, other.head_);
     std::swap(tail_, other.tail_);
