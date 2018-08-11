@@ -422,6 +422,15 @@ TEST_CASE("list can be swapped", "[list]") {
   REQUIRE(it == l2.begin());
 }
 
+
+bool cmp(const int& a, const int& b) {
+  if(a < b) {
+    return true;
+  }
+  return false;
+}
+
+
 TEST_CASE("list can be merged", "[list]") {
   custom::list<int> l1{3, 4, 3330, 5549};
   custom::list<int> l2{1, 5, 7, 99292, 443939};
@@ -446,6 +455,21 @@ TEST_CASE("list can be merged", "[list]") {
 
   prevElement = -1;
   for(const int& element: l3) {
+    REQUIRE(prevElement <= element);
+    prevElement = element;
+  }
+
+  custom::list<int> l4{3, 4, 3330, 5549};
+  custom::list<int> l5{1, 5, 7, 99292, 443939};
+  custom::list<int>::iterator it2 = l5.begin();
+  l4.merge(l5);
+
+  REQUIRE(l4.size() == 9);
+  REQUIRE(l5.size() == 0);
+  REQUIRE(l4.begin() == it2);
+
+  prevElement = -1;
+  for(const int& element: l4) {
     REQUIRE(prevElement <= element);
     prevElement = element;
   }
