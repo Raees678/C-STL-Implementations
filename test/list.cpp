@@ -413,10 +413,19 @@ TEST_CASE("list can be swapped", "[list]") {
   custom::list<int> l2{3, 4, 5};
   l1.swap(l2);
   REQUIRE(l2.front() == 1);
+ 
   REQUIRE(l2.back() == 2);
   REQUIRE(l1.front() == 3);
   REQUIRE(*(++l1.begin()) == 4);
   REQUIRE(l1.back() == 5);
   REQUIRE(it != l1.begin());
   REQUIRE(it == l2.begin());
+}
+
+TEST_CASE("list can be merged", "[list]") {
+  custom::list<int> l1{3, 4, 3330, 5549};
+  custom::list<int> l2{1, 5, 7, 99292, 443939};
+  custom::list<int>::iterator it = l2.begin();
+  l1.merge(l2);
+  std::cout << "returned" << std::endl;
 }

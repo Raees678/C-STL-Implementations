@@ -42,6 +42,7 @@ class list {
 
   template <class U>
   class list_iterator {
+   public:
     U* listNodePtr_;
     template <class, class>
     friend class list;
@@ -622,12 +623,75 @@ class list {
     }
   }
 
+  /*** OPERATIONS ***/
+
+  void merge(list& other) {
+    listNode<T>* thisNode = begin().listNodePtr_;
+    listNode<T>* otherNode = other.begin().listNodePtr_;
+
+    listNode<T>* thisEnd = end().listNodePtr_;
+    listNode<T>* otherEnd = other.end().listNodePtr_;
+
+    while (thisNode != thisEnd && otherNode != otherEnd) {
+      if (thisNode->value_ <= otherNode->value_) {
+        thisNode = thisNode->nextPtr_;
+      } else {
+        listNode<T>* nextNode = otherNode->nextPtr_;
+        if (otherNode->prevPtr_) {
+          otherNode->prevPtr_->nextPtr_ = otherNode->nextPtr_;
+        }
+
+        if (otherNode->nextPtr_) {
+          otherNode->nextPtr_->prevPtr_ = otherNode->prevPtr_;
+          other.head_ = otherNode->nextPtr_;
+        }
+        if (thisNode->prevPtr_) {
+          thisNode->prevPtr_->nextPtr_ = otherNode;
+        }
+        otherNode->prevPtr_ = thisNode->prevPtr_;
+        otherNode->nextPtr_ = thisNode;
+        --other.size_;
+        if (thisNode == head_) {
+          head_ = otherNode;
+        }
+
+        thisNode->prevPtr_ = otherNode;
+        otherNode = nextNode;
+        ++size_;
+      }
+    }
+
+    while (otherNode != otherEnd) {
+      listNode<T>* nextNode = otherNode->nextPtr_;
+      if (otherNode->prevPtr_) {
+        otherNode->prevPtr_->nextPtr_ = otherNode->nextPtr_;
+      }
+      if (otherNode->nextPtr_) {
+        otherNode->nextPtr_->prevPtr_ = otherNode->prevPtr_;
+        other.head_ = otherNode->nextPtr_;
+      }
+      tail_->nextPtr_ = otherNode;
+      otherNode->nextPtr_ = nullptr;
+      otherNode->prevPtr_ = tail_;
+      --other.size_;
+      tail_ = otherNode;
+      otherNode = nextNode;
+      ++size_;
+    }
+  }
+
+  void merge(list&& other) {
+    merge(other);
+  }
+
+  
+
  private:
   rebound_allocator_type alloc_;
   listNode<value_type>* head_;
   listNode<value_type>* tail_;
   size_type size_;
-};  // namespace custom
+};
 }  //  namespace custom
 
 #endif  // _USERS_RAEESRAJWANI_DOCUMENTS_HOBBY_DATA_STRUCTURES_CPP_LIST_LIST_HPP_
