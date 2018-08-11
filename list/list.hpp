@@ -625,7 +625,10 @@ class list {
 
   /*** OPERATIONS ***/
 
-  void merge(list& other) {
+  void merge(list& other) { merge(other, std::less<value_type>()); }
+
+  template <class Compare>
+  void merge(list& other, Compare comp) {
     listNode<T>* thisNode = begin().listNodePtr_;
     listNode<T>* otherNode = other.begin().listNodePtr_;
 
@@ -633,7 +636,7 @@ class list {
     listNode<T>* otherEnd = other.end().listNodePtr_;
 
     while (thisNode != thisEnd && otherNode != otherEnd) {
-      if (thisNode->value_ <= otherNode->value_) {
+      if (comp(thisNode->value_, otherNode->value_)) {
         thisNode = thisNode->nextPtr_;
       } else {
         listNode<T>* nextNode = otherNode->nextPtr_;
@@ -680,7 +683,12 @@ class list {
     }
   }
 
-  void merge(list&& other) { merge(other); }
+  void merge(list&& other) { merge(other, std::less<value_type>()); }
+
+  template <class Compare>
+  void merge(list&& other, Compare comp) {
+    merge(other, comp);
+  }
 
  private:
   rebound_allocator_type alloc_;
