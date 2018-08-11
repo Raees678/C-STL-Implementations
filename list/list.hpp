@@ -680,11 +680,7 @@ class list {
     }
   }
 
-  void merge(list&& other) {
-    merge(other);
-  }
-
-  
+  void merge(list&& other) { merge(other); }
 
  private:
   rebound_allocator_type alloc_;
